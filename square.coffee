@@ -1,15 +1,31 @@
-SQUARE_DEFAULT = 0
-SQUARE_MINE = 1
-SQUARE_MARK = 2
-SQUARE_MARKMINE = 3
-SQUARE_CLICK = 4
-SQUARE_CLICKMINE = 5
+NOT_MINE = 0
+MINE = 1
+UNKNOWN = 2
+
+NOT_CHECKED = 0
+CHECKED = 1
+MARKED = 2
+QED = 3
 
 class Square    
-    constructor: (@state = SQUARE_DEFAULT) ->
-    isMine: ->
-        @state | 1
-    isClicked: ->
-        @state | 2
-    isMarked: ->
-        @state | 4
+    constructor: (@isMine = NOT_MINE, @isChecked = NOT_CHECKED, @index, @number = -1) ->
+    
+    getClass: ->
+        switch @isChecked
+            when NOT_CHECKED
+                return ""
+            when MARKED
+                return "marked"
+            when QED
+                return "qed"
+            when CHECKED
+                if @isMine == MINE
+                    if @number <= 0
+                        return "boom"
+                    else
+                        return "boom" + @mines
+                else
+                    if @number <= 0
+                        return "clear"
+                    else
+                        return "clear" + @mines

@@ -1,67 +1,113 @@
 MINE_PROPORTION = 0.2
-TIME_PENALTY = 10
-POINTS_PER_SQUARE = 100
 
 class Field
     constructor: ->
         @array = []
-    clickSquare: (x, y) ->
-        square = getSquare(x,y)
+    
+    #---------
+    # NAME:         clickSquare
+    # DESCRIPTION:  called by the UI to click on a SQUARE
+    # PARAMETERS:
+    #  index (I) - should be in the format of XXX_YYY
+    #  result (IO,DEF=[]) an array of objects with the following properties
+    #   "index" : the index of the square clicked
+    #   "square" : the css class the square should now be
+    #   "result" :  "boom" if a mine was clicked
+    #               "money" if a space was cleared
+    #               "nothing" if a space was already clicked
+    #  ifFirstClick (I,DEF=no) whether this is the first click
+    #---------
+    clickSquare: (index, result = [], isFirstClick = no) ->
+        square = getSquare(index, if isFirstClick then NOT_MINE else undefined)
         if square.isChecked == NOT_CHECKED or square.isChecked == QED
-            redraw(x, y, status)
             if square.isMine()
-                timer -= 10
+                 outcome = "boom"
             else
-                points += POINTS_PER_SQUARE
+                outcome = "money"
         
-        initializeOthers(index, x, y)
+            square.number = getCount(index)
+        else
+            outcome = "nothing"
+        
+        result.push({"index" : index, square: square.getClass(), "result" : outcome})
+        
+        if square.number == 0 and outcome == "money"
+            clearSurroundingSquares(index, result)
+        return result
 
-    initializeOthers: (x, y) ->
+    clearSurroundingSquares(index, result)
+        coord = indexToCoordinates(index)
+        x = coord[0]
+        y = coord[1]
+        
+        #upper left
+        clickSquare(coordinatesToIndex(x - 1, y - 1), result)
+        #upper
+        clickSquare(coordinatesToIndex(x, y - 1), result)
+        #upper right
+        clickSquare(coordinatesToIndex(x + 1, y - 1), result)
+        #right
+        clickSquare(coordinatesToIndex(x + 1, y), result)
+        #lower right
+        clickSquare(coordinatesToIndex(x + 1, y + 1), result)
+        #lower
+        clickSquare(coordinatesToIndex(x, y + 1), result)
+        #lower left
+        clickSquare(coordinatesToIndex(x - 1, y + 1), result)
+        #left
+        clickSquare(coordinatesToIndex(x - 1, y), result)
+
+    markSquare: (index) ->
+        square = getSquare(index, UNKNOWN)
+        if square.isChecked == NOT_CHECKED
+            square.isChecked = MARKED
+        else if square.isChecked == MARKED
+            square.isChecked = QED
+        else if square.isChecked == QED
+            square.isChecked = NOT_CHECKED
+        
+        return { "square" : square.getClass() }
+
+    getCount: (index) ->
         count = 0
+        coord = indexToCoordinates(index)
+        x = coord[0]
+        y = coord[1]
+        
         #upper left square
-        x -= 1
-        y -= 1
-        if getSquare(x, y).isMine == MINE then count += count
-        
+        if getSquare(coordinatesToIndex(x - 1, y - 1)).isMine == MINE then count += 1
         #upper square
-        x += 1
-        if getSquare(x, y).isMine == MINE then count += count
-        
+        if getSquare(coordinatesToIndex(x, y - 1)).isMine == MINE then count += 1
         #upper right square
-        x += 1
-        if getSquare(x, y).isMine == MINE then count += count
-        
+        if getSquare(coordinatesToIndex(x + 1, y - 1)).isMine == MINE then count += 1
         #right square
-        y += 1
-        if getSquare(x, y).isMine == MINE then count += count
-        
+        if getSquare(coordinatesToIndex(x + 1, y)).isMine == MINE then count += 1
         #right bottom square
-        y += 1
-        if getSquare(x, y).isMine == MINE then count += count
-        
+        if getSquare(coordinatesToIndex(x + 1, y + 1)).isMine == MINE then count += 1
         #bottom square
-        x -= 1
-        if getSquare(x, y).isMine == MINE then count += count
-        
+        if getSquare(coordinatesToIndex(x, y + 1)).isMine == MINE then count += 1
         #bottom left square
-        x -= 1
-        if getSquare(x, y).isMine == MINE then count += count
-        
+        if getSquare(coordinatesToIndex(x - 1, y + 1)).isMine == MINE then count += 1
         #left square
-        y -= 1
-        if getSquare(x, y).isMine == MINE then count += count
+        if getSquare(coordinatesToIndex(x - 1, y)).isMine == MINE then count += 1
         
+        return count
 
+    indexToCoordinates: (index) ->
+        return split(index, "_")
     coordinatesToIndex: (x, y) ->
-        "x" + x + "y" + y
-        
-    getSquare: (x, y, forceMine = no) ->
+        return x + "_" + y
+    
+    getSquare: (index, forceMine = undefined) ->
         index = coordinatesToIndex(x,y)
         if not @array[index]?
-            @array[index] = new Square(if forceMine or Math.random() < MINE_PROPORTION then MINE else NOT_MINE)
-        else if @array[index].isMine == UNKNOWN
-            @array[index].isMine = if forceMine or Math.random() < MINE_PROPORTION then MINE else NOT_MINE
-        @array[index]    
-    
-    redraw: (x, y, status) ->
-        #do redraw stuff here.
+            if forceMine?
+                @array[index] = new Square(forceMine)
+            else
+                @array[index] = new Square(if Math.random() < MINE_PROPORTION then MINE else NOT_MINE)
+        else if @array[index].isMine == UNKNOWN and forceMine != UNKNOWN
+            if forceMine?
+                @array[index] = new Square(forceMine)
+            else
+                @array[index].isMine = if Math.random() < MINE_PROPORTION then MINE else NOT_MINE
+        return @array[index]    
