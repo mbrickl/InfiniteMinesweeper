@@ -1,0 +1,1 @@
+{"ts":1346372468247,"silentsave":true,"restoring":false,"patch":[[{"diffs":[[1,"\n$(document).ready(function() {\n    window.gField = new Field\n    window.gScore = 0\n    window.gInProgress = false\n    $(\"#square\").click(sqClick)\n    \n});"]],"start1":0,"start2":0,"length1":0,"length2":155}]],"length":155}
