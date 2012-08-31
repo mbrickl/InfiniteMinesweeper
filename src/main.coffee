@@ -1,8 +1,7 @@
 
-$(document).ready(function() {
-    window.gField = new Field
-    window.gScore = 0
-    window.gInProgress = false
-    $("#square").click(sqClick)
+$(document).ready () =>
+    window.game = new Game()
+    $("#start").click -> window.game.startClock
+    #Bind click handler
+    $("#square").click sqClick
     
-});

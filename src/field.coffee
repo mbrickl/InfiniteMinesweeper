@@ -35,7 +35,7 @@ class Field
             clearSurroundingSquares(index, result)
         return result
 
-    clearSurroundingSquares(index, result)
+    clearSurroundingSquares: (index, result) ->
         coord = indexToCoordinates(index)
         x = coord[0]
         y = coord[1]

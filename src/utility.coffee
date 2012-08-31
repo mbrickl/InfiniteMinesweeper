@@ -1,3 +1,6 @@
+WIN_VAL=10
+LOSS_VAL=-10
+
 # Square click handler
 # 1 = Primary mouse button (left)
 # 2 = Middle mouse button
@@ -10,8 +13,8 @@ sqClick = (target) ->
 
 # Handle left click on square
 sqLeftClick = (target) ->
-    gField.clickSquare(target.id, vals, !gInProgress)
-    gInProgress = true
+    window.game.field.clickSquare(target.id, vals, !gInProgress)
+    window.game.startClock()
     for val in vals
         switch val.result
             when "boom" then updateBoard(target, "mine", "lose")
@@ -20,7 +23,7 @@ sqLeftClick = (target) ->
             
 # Handle right click on square
 sqRightClick = (target) ->
-    val = gField.markSquare(target.id)
+    val = window.game.field.markSquare(target.id)
     updateBoard(target, val.newClass, "mark")
     true
     
@@ -33,9 +36,9 @@ updateBoard = (target, newClass, status) ->
     #Update score if necessary
     switch status
         when "win"
-            gScore += WIN_VAL
+            window.game.updateScore(WIN_VAL)
         when "lose"
-            gScore -= LOSS_VAL
+            window.game.updateScore(LOSS_VAL)
     true        
     
     
