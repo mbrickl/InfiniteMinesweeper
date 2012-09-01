@@ -7,7 +7,7 @@ CHECKED = 1
 MARKED = 2
 QED = 3
 
-class Square    
+class @Square    
     constructor: (@isMine = NOT_MINE, @isChecked = NOT_CHECKED, @index, @number = -1) ->
     
     getClass: ->

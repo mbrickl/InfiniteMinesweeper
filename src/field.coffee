@@ -1,6 +1,6 @@
 MINE_PROPORTION = 0.2
 
-class Field
+class @Field
     constructor: ->
         @array = []
     
