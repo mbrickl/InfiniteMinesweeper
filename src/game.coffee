@@ -1,7 +1,7 @@
 #Game time in seconds
 MAX_TIME=30
-SQ_WIDTH=10
-SQ_HEIGHT=10
+SQ_WIDTH=50
+SQ_HEIGHT=50
 
 class @Game
     constructor: ->
@@ -15,14 +15,17 @@ class @Game
             start_col: 0,
             start_row: 0
             oncreate: ($element, col, row) =>
-                if not window.game.field.array[$element.attr("id")]?
-                    $element.attr("id",Field.coordinatesToIndex(col,row))
+                if not @field.array[$element.attr("id")]?
+                    $element.attr("id",@field.coordinatesToIndex(col,row))
                     $element.addClass("untouched")
                 else
-                    $element.addClass(window.game.field.array[$element.attr("id")])
+                    $element.addClass(@field.array[$element.attr("id")])
                 $element.addClass("square")
+                #$element.text(col + "_" + row)
                 $element.click sqClick
+                true
         });
+        true
                 
 
     updateScore: (increment) ->

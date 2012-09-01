@@ -1,11 +1,11 @@
-NOT_MINE = 0
-MINE = 1
-UNKNOWN = 2
+@NOT_MINE = 0
+@MINE = 1
+@UNKNOWN = 2
 
-NOT_CHECKED = 0
-CHECKED = 1
-MARKED = 2
-QED = 3
+@NOT_CHECKED = 0
+@CHECKED = 1
+@MARKED = 2
+@QED = 3
 
 class @Square    
     constructor: (@isMine = NOT_MINE, @isChecked = NOT_CHECKED, @index, @number = -1) ->

@@ -1,11 +1,10 @@
 #viewport
 {
     overflow:hidden;
-    width:300px;
-    height:300px;
+    width:400px;
+    height:400px;
     color:#fff;
     border:1px solid #ccc;
-    background-color:#ffd3e3;
 }
 
 #board
@@ -14,39 +13,34 @@
 
 .untouched
 {
+    background-color:gray;
     color:gray;
-    border-style:solid;
-    border-color:black;
-    border-width:2px;
 }
 
 .marked
 {
-    color:blue;
-    border-style:solid;
-    border-color:black;
-    border-width:2px;
+    background-color:blue;
 }
 
 .qed
 {
-    color:purple;
-    border-style:solid;
-    border-color:black;
-    border-width:2px;
+    background-color:purple;
 }
 
 .boom
 {
-    color:red;
-    border-style:solid;
-    border-color:black;
-    border-width:2px;
+    background-color:red;
 }
 
 .clear
 {
-    color:white;
+    background-color:white;
+}
+
+.square
+{
+    min-height:50px;
+    min-width:50px;
     border-style:solid;
     border-color:black;
     border-width:2px;
